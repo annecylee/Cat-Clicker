@@ -1,0 +1,59 @@
+.* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.prompt{
+  font-size: 24px;
+  color: #003b4d;
+  width: 100%;
+}
+
+.show-cat {
+  width: 50%;
+  margin: 0 auto;
+}
+.cat-image
+ {
+  margin-top: 80px;
+  width:600px;
+  height: 426px;
+  border: 1px solid #0089b3;
+  padding: 10px;
+}
+
+.favorate > * {
+    vertical-align: middle;
+}
+
+.favorate > img {
+  display: inline-block;
+  width:50px;
+}
+
+.favorate > p {
+  display: inline-block;
+  font-size: 18px;
+  clear: left;
+  color:#0089b3;
+}
+
+.cat-container {
+  display: flex;
+  justify-content: space-around;
+}
+.cat-list  {
+  display: inline-block;
+  width: 10%;
+  height: 40px;
+  list-style-type: none;
+  background-color: #e5f9ff;
+  text-align: center;
+  line-height: 10px;
+}
+
+
+.clicks {
+text-align: right;
+}
