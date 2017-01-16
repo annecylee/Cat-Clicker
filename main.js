@@ -1,141 +1,89 @@
-var buttonNameList = [];
-
 var model = {
+  //cat is displaed currently
+  currentCat: null,
+  //cat list
   cats: [
-      {name: 'Lucy', src: 'images/cat1.jpg', count: 0},
-      {name: 'Lily', src: 'images/cat2.jpg', count: 0},
-      {name: 'Fizs', src: 'images/cat3.jpg', count: 0},
-      {name: 'Bruno', src: 'images/cat4.jpg', count: 0},
-      {name: 'Silvia', src: 'images/cat5.jpg', count: 0}
-    ],
-
-  buttons: function(){
-    for(var i = 0; i < (model.cats.length); i ++){
-      buttonNameList.push(model.cats[i].name)
-    }
-    return buttonNameList
-  }
+        {name: 'Lucy', src: 'images/cat1.jpg', count: 0},
+        {name: 'Lily', src: 'images/cat2.jpg', count: 0},
+        {name: 'Fizs', src: 'images/cat3.jpg', count: 0},
+        {name: 'Bruno', src: 'images/cat4.jpg', count: 0},
+        {name: 'Silvia', src: 'images/cat5.jpg', count: 0}
+      ],
 };
 
 var octupos = {
-  getButtons: function(){
-    for(i=0; i<buttonNameList.length; i++){
-      buttonView.renderButtons(buttonNameList[i])
-    }
+
+  init: function(){
+    catView.init();
+    catListView.init();
+  },
+  //get cat lists
+  getCats: model.cats,
+
+  getCurrentCat: function(){
+    return model.currentCat;
   },
 
-  buttonClicked: function(){
-    for(cat of model.cats){
-      $('#button_' + cat.name).click((function(currentCat) {
-        return function(){
-          catView.renderCat(currentCat)
-          catView.renderCount(currentCat.count)
-        }
-      })(cat))
-    }
+  setCurrentCat: function(cat){
+     model.currentCat = cat;
   },
 
-  catClicked: function(){
-    for(cat of model.cats){
-      $('.cat-image').on('click', '#image_' + cat.name, (function(currentCat) {
-        return function() {
-          currentCat.count += 1;
-          catView.renderCount(currentCat.count)
-        }
-      })(cat))
-    }
-
+  incrementCounter: function(){
+    model.currentCat.count++;
+    catView.render();
   }
 
 };
 
-var buttonView = {
-
-  renderButtons: function (name){
-    $('.cat-container').append("<li class='cat-list' id='button_" + name + "'><p class =''>" + name + "</p>\n"
-                                  + "</li>\n");
-  }
-}
-
 var catView = {
 
-      renderCat: function(cat) {
-        $('.cat-image').attr({
-          src: cat.src,
-          id: 'image_' + cat.name
-        })
-      },
+  init: function(){
+    this.catImage = $('.cat-image')
+    this.counts = $('.favorte-counts')
+    //if image is clciked, call function to increase counter
+    this.catImage.click(function() {
+      octupos.incrementCounter();
+    });
+  },
+  //render cat image and its count
+  render: function(){
+    var currentCat = octupos.getCurrentCat();
+    this.catImage.attr({
+      src: currentCat.src,
+      id: 'image_' + currentCat.name
+    });
+    this.counts.text(currentCat.count + " likes");
+  }
+};
 
-      renderCount: function(count) {
-        $('.favorte-counts').text(count + " likes")
-      }
+var catListView = {
 
-}
-model.buttons();
-octupos.getButtons();
-octupos.buttonClicked();
-octupos.catClicked();
+  init: function(){
+    this.catList = $('.cat-container');
+    // this.catList = document.getElementsByClassName('cat-container');
+    this.render();
+  },
 
+  render: function(){
+    var cat, elem, i
+    var cats = octupos.getCats;
+    //render cat list buttons
+    this.catList.innerHTML = '';
 
+    for(i = 0; i < cats.length; i ++){
+      cat = cats[i];
+      elem = this.catList.append("<li class='cat-list' id='button_" + cat.name + "'><p class =''>" + cat.name + "</p>\n" + "</li>\n");
 
+      //render cat if binded button is clicked
+      $('#button_' + cat.name).click((function(catCopy) {
+        return function(){
+          octupos.setCurrentCat(catCopy);
+          console.log(catCopy.name);
+          catView.render();
+        }
+      })(cat));
+    }
+  }
+};
 
-
-
-
-// var Cat = function(name, src, id, count){
-//   this.name = name;
-//   this.src = src;
-//   this.id = id;
-//   this.count = count;
-// };
-//
-// Cat.prototype.createCat = function(){
-//   $('.cat-container').append("<li class='cat-list' id='" + this.name + "'><p class = 'name'>" + this.name + "</p>\n"
-//                                 + "<p class = 'clicks' id = '" + this.id + "_clicks'" + ">Clicks: 0</p>\n"
-//                                 + "<img class='cat-image' src='" + this.src
-//                                 + "' alt='Cat Image'>\n" + "</li>\n"
-//                                 );
-// };
-//
-// Cat.prototype.showCat = function(){
-//   $('.contain-container').append("<img class='cat-image' id='" + this.id + "' src='" + this.src + "' alt='Cat Image'>")
-// }
-//
-//
-// Cat.prototype.isClicked = function(){
-//   $('#' + this.name).click((function(count, id, src){
-//     return function(){
-//       count += 1;
-//       $('.cat-image').attr({
-//         src: src,
-//         id: id
-//       })
-//     }
-//   })(this.count, this.id, this.src))
-//
-//   // $('#' + this.id).click((function(count){
-//   //   $('.favorte-counts').text(count + " likes")
-//   // })(this.count));
-// }
-//
-//
-//
-//
-// var catList = []
-// var firstCat = new Cat('Lucy', 'images/cat1.jpg', 'cat1', 0);
-// var secondCat = new Cat('Lily', 'images/cat2.jpg', 'cat2', 0);
-// var thirdCat = new Cat('Fizs', 'images/cat3.jpg', 'cat3', 0);
-// var forthCat = new Cat('Bruno', 'images/cat4.jpg', 'cat4', 0);
-// var fifthCat = new Cat('Silvia', 'images/cat5.jpg', 'cat5', 0);
-// catList.push(firstCat, secondCat, thirdCat, forthCat, fifthCat);
-//
-// var catsNum = catList.length
-// for(var i = 0; i < catsNum; i++){
-//   var currentCat = catList[i]
-//   $('.cat-container').append("<li class='cat-list' id='" + currentCat.name + "'>" + currentCat.name + "</li>")
-//   currentCat.isClicked()
-//
-//   $( "#" + currentCat.id ).click((function() {
-//     $('.favorte-counts').text(currentCat.count + " likes")
-//   })());
-// }
+octupos.init();
