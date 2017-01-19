@@ -14,6 +14,7 @@ var model = {
 var octupos = {
 
   init: function(){
+    adminView.init();
     catView.init();
     catListView.init();
   },
@@ -28,11 +29,59 @@ var octupos = {
      model.currentCat = cat;
   },
 
+  setCurrentCatName: function(name){
+    model.currentCat.name = name
+  },
+
+  setCurrentCatSrc: function(src){
+    model.currentCat.src = src
+
+  },
+
+  setCurrentCatCount: function(count){
+    model.currentCat.count = count
+  },
+
   incrementCounter: function(){
     model.currentCat.count++;
     catView.render();
+    adminView.render();
   }
 
+};
+
+var adminView = {
+  init: function(){
+    // $('#admin-button').hide()
+    $('.hide').hide()
+  },
+
+  render: function(){
+    var currentCat = octupos.getCurrentCat();
+    $('#admin-button').show()
+    $('#admin-button').click(function(){
+      $('.hide').show()
+    })
+
+    $('#cancel-button').click(function(){
+      $('.hide').hide()
+    })
+
+    $('#name-input').val(currentCat.name);
+    $('#url-input').val(currentCat.src);
+    $('#click-input').val(currentCat.count);
+
+
+  $('#save-button').click(function(){
+    octupos.setCurrentCatName($('#name-input').val());
+    octupos.setCurrentCatSrc($('#url-input').val());
+    octupos.setCurrentCatCount($('#click-input').val());
+    catView.render();
+    catListView.render();
+    $('.hide').hide();
+
+   })
+  }
 };
 
 var catView = {
@@ -68,18 +117,24 @@ var catListView = {
     var cat, elem, i
     var cats = octupos.getCats;
     //render cat list buttons
-    this.catList.innerHTML = '';
+    // this.catList.innerHTML = '';
+    this.catList.empty();
 
     for(i = 0; i < cats.length; i ++){
       cat = cats[i];
-      elem = this.catList.append("<li class='cat-list' id='button_" + cat.name + "'><p class =''>" + cat.name + "</p>\n" + "</li>\n");
+      elem = document.createElement('li');
+      elem.className = 'cat-list';
+      elem.id = 'button_' + cat.name;
+      elem.textContent = cat.name
+      this.catList[0].appendChild(elem)
+      // elem = this.catList.append("<li class='cat-list' id='button_" + cat.name + "'><p class =''>" + cat.name + "</p>\n" + "</li>\n");
 
       //render cat if binded button is clicked
       $('#button_' + cat.name).click((function(catCopy) {
         return function(){
           octupos.setCurrentCat(catCopy);
-          console.log(catCopy.name);
           catView.render();
+          adminView.render();
         }
       })(cat));
     }
